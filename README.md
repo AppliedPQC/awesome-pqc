@@ -108,7 +108,7 @@ The part most implementers underestimate. An implementation is not correct becau
 
 ## Learning
 
-- **[Applied Post-Quantum Cryptography](https://appliedpqc.io/)** ([PDF](https://appliedpqc.io/apqc.pdf), [source](https://github.com/AppliedPQC/AppliedPQC)) — a book building PQC from first principles to deployment, with worked SageMath throughout.
+- **[Applied Post-Quantum Cryptography](https://appliedpqc.io/AppliedPQC/)** ([PDF](https://appliedpqc.io/AppliedPQC/apqc.pdf), [source](https://github.com/AppliedPQC/AppliedPQC)) — a book building PQC from first principles to deployment, with worked SageMath throughout.
   - Complete, byte-exact SageMath implementations, each covering **every numbered algorithm** of its standard and verified against the NIST ACVP vectors:
     [`fips203_mlkem.sage`](https://github.com/AppliedPQC/AppliedPQC/blob/main/sage/fips203_mlkem.sage) (21/21 algorithms) ·
     [`fips204_mldsa.sage`](https://github.com/AppliedPQC/AppliedPQC/blob/main/sage/fips204_mldsa.sage) (49/49) ·
