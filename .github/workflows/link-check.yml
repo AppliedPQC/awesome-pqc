@@ -1,0 +1,45 @@
+name: Link check
+
+# This list's value is that its links are verified, so verification runs
+# on every change and weekly, rather than resting on a claim in the README.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '17 6 * * 1'   # Mondays, 06:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check every link in README.md
+        run: |
+          set -uo pipefail
+          # nsa.gov, cisa.gov and nccoe.nist.gov answer automated clients with
+          # 403 regardless of liveness, so they are described in the README
+          # rather than linked, and skipped here for the same reason.
+          skip='nsa\.gov|cisa\.gov|nccoe\.nist\.gov'
+          grep -oE 'https?://[^)" ]+' README.md | sed 's/[.,]$//' | sed 's/#.*//' \
+            | sort -u | grep -vE "$skip" > urls.txt
+          echo "checking $(wc -l < urls.txt) distinct URLs"
+          fail=0
+          while read -r u; do
+            code=$(curl -sL -o /dev/null -w '%{http_code}' --max-time 30 --retry 2 \
+                        --max-redirs 5 -A 'Mozilla/5.0 (link-check)' "$u")
+            case "$code" in
+              200|206) ;;
+              *) echo "::error::$code $u"; fail=$((fail+1)) ;;
+            esac
+          done < urls.txt
+          if [ "$fail" -gt 0 ]; then
+            echo "$fail dead or unreachable link(s)"
+            exit 1
+          fi
+          echo "all links OK"
