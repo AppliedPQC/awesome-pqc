@@ -109,16 +109,38 @@ The part most implementers underestimate. An implementation is not correct becau
 
 ## Blockchain and consensus
 
-Consensus layers hit a PQC problem the web does not: hash-based signatures are
-secure on the most conservative assumption available, but at roughly 3 KB each
-they are far too large to put on chain one per validator. The work here is
-mostly about *aggregating* them.
+Chains hit PQC problems the web does not, and — importantly — not the *same*
+problem as each other. Bitcoin's is public-key exposure on an immutable ledger
+under rough-consensus governance; Ethereum's is signature size at validator
+scale, which is why its flagship artifact is a zkVM rather than a signature
+library; Cosmos's is key-type negotiation across interoperable chains. Progress
+inverts exposure: the chain with the sharpest exposure has specified no PQ
+signature scheme, and the least-discussed of the three has one in shipped code.
+
+**Ethereum.** Hash-based signatures rest on the most conservative assumption
+available, but at roughly 3 KB each they cannot go on chain one per validator,
+so most of the work is *aggregation*.
 
 - [Post-Quantum Ethereum](https://pq.ethereum.org/) — the hub for Ethereum's post-quantum effort, and the fastest way to see current status.
 - [Ethereum quantum-resistance roadmap](https://ethereum.org/roadmap/future-proofing/quantum-resistance/) — why the consensus layer is changing, in protocol terms.
 - [`leanEthereum/leanVM`](https://github.com/leanEthereum/leanVM) — "minimal hash-based zkVM, for a Post-Quantum Ethereum", built for recursive aggregation of post-quantum signatures. This is the piece that makes hash-based signatures affordable at validator scale.
 - [`leanEthereum/leanSig`](https://github.com/leanEthereum/leanSig) — Rust prototype of the proposed signature scheme, built on tweakable hash functions and incomparable encodings. Explicitly unaudited and not for production.
 - [`b-wagn/hash-sig`](https://github.com/b-wagn/hash-sig) — the upstream research implementation leanSig grew out of, with the accompanying paper ([eprint 2025/055](https://eprint.iacr.org/2025/055)).
+
+**Bitcoin.** Two Draft BIPs, neither activated. Note that BIP-360 does *not*
+introduce a post-quantum signature scheme — it removes Taproot's key-path spend
+so no bare public key is exposed — and BIP-361 formally `Requires: TBD Post
+Quantum Signature BIP`, a document that does not yet exist.
+
+- [BIP-360, Pay-to-Merkle-Root (P2MR)](https://github.com/bitcoin/bips/blob/master/bip-0360.mediawiki) — soft-fork output type defending against long-exposure attacks. Explicitly not short-exposure, and explicitly not a signature scheme.
+- [BIP-361, Post Quantum Migration and Legacy Signature Sunset](https://github.com/bitcoin/bips/blob/master/bip-0361.mediawiki) — phased sunset of legacy ECDSA/Schnorr. States that as of 1 March 2026 over 34% of all bitcoin have revealed a public key on chain.
+- [Bitcoin Optech: quantum resistance](https://bitcoinops.org/en/topics/quantum-resistance/) — the least breathless running summary of where the debate stands.
+
+**Cosmos.** The one place a NIST scheme is already in shipped consensus code,
+rather than in a proposal.
+
+- [Cosmos SDK `UPGRADING.md`](https://github.com/cosmos/cosmos-sdk/blob/main/UPGRADING.md) — v0.55 registers ML-DSA-65 (FIPS 204) as a validator consensus key type ([PR #26436](https://github.com/cosmos/cosmos-sdk/pull/26436)), opt-in behind a genesis parameter. Read the IBC warning: light clients verify commit signatures with the *counterparty's* compiled-in crypto, so enabling a new key type before counterparties can verify it stops packet flow and eventually expires the client.
+- [Post-quantum keys](https://docs.cosmos.network/sdk/latest/keys/post-quantum-keys) and [Migrate a validator to ML-DSA](https://docs.cosmos.network/sdk/latest/keys/migrate-validator-ml-dsa) — the operator guides.
 
 
 ## Learning
