@@ -13,10 +13,10 @@ caught, and where it falls short.
 
 [`veorq/awesome-post-quantum`](https://github.com/veorq/awesome-post-quantum) is
 the canonical general PQC list and is actively maintained — **start there** for
-breadth, papers, and policy. This list is deliberately narrower: it is
-**implementation-first**, aimed at the person writing code against FIPS 203/204/205,
-hunting for conformance test vectors, or planning a migration. Where the two
-overlap, prefer whichever is fresher.
+breadth, papers, and policy. This list is deliberately narrower and focuses on
+three things: **implementation** (code, test vectors, conformance),
+**industry deployment** (what is actually shipping in TLS, SSH, browsers, and
+hardware), and **migration** (inventory, hybrid rollout, and timelines).
 
 ## Contents
 
