@@ -1,4 +1,4 @@
-# Awesome PQC [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+# Awesome PQC [![Awesome](https://awesome.re/badge.svg)](https://awesome.re) [![Follow @AppliedPQC on X](https://img.shields.io/badge/X-%40AppliedPQC-000000?logo=x&logoColor=white)](https://x.com/AppliedPQC)
 
 > A curated, **link-verified** list of post-quantum cryptography resources for
 > people who have to *build* and *ship* it.
