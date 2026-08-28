@@ -130,11 +130,15 @@ so most of the work is *aggregation*.
 **Bitcoin.** Two Draft BIPs, neither activated. Note that BIP-360 does *not*
 introduce a post-quantum signature scheme — it removes Taproot's key-path spend
 so no bare public key is exposed — and BIP-361 formally `Requires: TBD Post
-Quantum Signature BIP`, a document that does not yet exist.
+Quantum Signature BIP`, a document that does not yet exist as a BIP. A first
+candidate, SHRINCS, was posted to bitcoin-dev in August 2026, but it has not
+been submitted to the BIPs repository and carries no security proof.
 
 - [BIP-360, Pay-to-Merkle-Root (P2MR)](https://github.com/bitcoin/bips/blob/master/bip-0360.mediawiki) — soft-fork output type defending against long-exposure attacks. Explicitly not short-exposure, and explicitly not a signature scheme.
 - [BIP-361, Post Quantum Migration and Legacy Signature Sunset](https://github.com/bitcoin/bips/blob/master/bip-0361.mediawiki) — phased sunset of legacy ECDSA/Schnorr. States that as of 1 March 2026 over 34% of all bitcoin have revealed a public key on chain.
 - [Bitcoin Optech: quantum resistance](https://bitcoinops.org/en/topics/quantum-resistance/) — the least breathless running summary of where the debate stands.
+- [`BlockstreamResearch/shrincs-cpp`](https://github.com/BlockstreamResearch/shrincs-cpp) — the only public implementation, and it predates the draft rather than implementing it: `w = 256` over 16 chains against the draft's `w = 16` over 32, and PORS+FP where the draft settled on FORS to stay black-box compatible with FIPS 205. Read it for the benchmark and KAT harness, not as a conformance reference.
+- [`SHRINCS/shrincs-bip`](https://github.com/SHRINCS/shrincs-bip) — the draft itself, and the first concrete answer to BIP-361's missing dependency. Semi-stateful: a 548-byte stateful signature backed by an SLH-DSA fallback inside every key pair, so losing state costs signature size rather than funds. Test vectors, unit tests and a security proof are all still outstanding.
 
 **Cosmos.** The one place a NIST scheme is already in shipped consensus code,
 rather than in a proposal.
@@ -169,6 +173,14 @@ Credit where due, and useful when this list is too narrow:
 Awesome lists rot. This one records how and when it was checked so you can judge how much to trust it.
 
 **Method (2026-07-31).** GitHub projects were resolved through the GitHub API, confirming the repository exists and is not archived, and recording its last-push date; renames and transfers were followed to their current canonical names. Non-GitHub links were fetched and required HTTP 200 after redirects. For standards documents, the claim was checked against the document itself, not against a search summary.
+
+**Addition (2026-08-28).** The two SHRINCS entries were resolved through the API,
+confirmed unarchived, and fetched for HTTP 200. The implementation was then read
+against the draft's own constants rather than against its README, which is how the
+divergence surfaced: `shrincs-cpp` is built on `w = 256` over 16 chains with PORS+FP,
+while the draft specifies `w = 16` over 32 chains with FORS. Its README also points at
+an earlier specification repository than the one the draft was announced from. Listing
+it as an implementation of the draft would have been wrong.
 
 **Currency.** All but one GitHub entry had commits within the last five months, most within days. The exception is `ietf-wg-pquip/state-of-protocols-and-pqc`, last updated June 2025, which is flagged inline above rather than quietly listed alongside actively maintained projects.
 
