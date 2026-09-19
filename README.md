@@ -3,13 +3,6 @@
 > A curated, **link-verified** list of post-quantum cryptography resources for
 > people who have to *build* and *ship* it.
 
-Every entry below was checked on **2026-07-31** and re-checked on
-**2026-09-18**: each GitHub project resolved through the API and was confirmed
-not archived; every other link returned HTTP 200, apart from two hosts that now
-refuse automated clients, named under Verification. Entries that could not be verified were removed rather than shipped
-as decoration. See [Verification](#verification) for the method, what it
-caught, and where it falls short.
-
 ## Why this list
 
 [`veorq/awesome-post-quantum`](https://github.com/veorq/awesome-post-quantum) is
