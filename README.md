@@ -203,58 +203,13 @@ Credit where due, and useful when this list is too narrow:
 
 Awesome lists rot. This one records how and when it was checked so you can judge how much to trust it.
 
-**Method (2026-07-31).** GitHub projects were resolved through the GitHub API, confirming the repository exists and is not archived, and recording its last-push date; renames and transfers were followed to their current canonical names. Non-GitHub links were fetched and required HTTP 200 after redirects. For standards documents, the claim was checked against the document itself, not against a search summary.
+**Method.** GitHub projects were resolved through the GitHub API, confirming the repository exists and is not archived, and recording its last-push date; renames and transfers were followed to their current canonical names. Non-GitHub links were fetched and required HTTP 200 after redirects. For standards documents, the claim was checked against the document itself, not against a search summary.
 
-**Addition (2026-08-28).** The two SHRINCS entries were resolved through the API,
-confirmed unarchived, and fetched for HTTP 200. The implementation was then read
-against the draft's own constants rather than against its README, which is how the
-divergence surfaced: `shrincs-cpp` is built on `w = 256` over 16 chains with PORS+FP,
-while the draft specifies `w = 16` over 32 chains with FORS. Its README also points at
-an earlier specification repository than the one the draft was announced from. Listing
-it as an implementation of the draft would have been wrong.
-
-**Re-check (2026-09-18).** The whole list was re-run by the same method, and the
-news of the intervening three weeks was checked against primary sources. Three
-entries were removed under the policy below: `PQClean/PQClean`, retired and
-archived with `pq-code-package` named as its successor; `rustpq/pqcrypto`,
-archived as unmaintained on 2026-09-16; and `b-wagn/hash-sig`, unmaintained since
-November 2025 in favour of leanSig. One linked draft had become RFC 10024. Two
-statements had become false: `shrincs-cpp` was no longer the only SHRINCS
-implementation, and Cosmos was no longer the only chain running a NIST-selected
-scheme in consensus. Two hosts now refuse automated clients.
-`datatracker.ietf.org` serves a Cloudflare challenge (HTTP 403), so its two links
-were confirmed through RFC Editor records instead: the queue entry for
-draft-ietf-tls-mlkem, and RFC 9958 as the PQUIP working group's latest output.
-`pq-crystals.org` answered HTTP 429 on every attempt. Both hosts are kept,
-because they are the authoritative sources for what they link.
-
-**Re-check (2026-10-06).** The same method again, over the list as it stood after
-2026-09-18 and over the eighteen days since. Every GitHub repository resolved and
-none was archived; all had been pushed within the past five months, most within
-days, except `ietf-wg-pquip/state-of-protocols-and-pqc` (June 2025, flagged
-inline) and `leanEthereum/leanSig` (April 2026, consistent with the prototype
-status its entry states). Of 50 non-GitHub links, 46 returned HTTP 200; the four
-that did not are the same hosts as before, `datatracker.ietf.org` (403) and
-`pq-crystals.org` (429), and are kept for the same reason. Additions were checked
-against primary sources: the Cloudflare posts by their own publication metadata,
-BSI's notice by its German page and English PDF, the EU roadmap and NCSC pages
-by fetch, ANSSI's dates by its own FAQ rather than the conference reports, the
-Apple documents by fetch, and the seven RFCs by the RFC Editor's index. Three
-things changed on primary sources: BSI reversed a recommendation, which no other
-national agency had done; `wolfSSL` 5.9.4 and OpenSSH 10.4 moved post-quantum
-*authentication* into shipping releases; and two more certificate authorities
-have now committed to Merkle Tree Certificates in writing. Two things did not:
-FIPS 206 remains unpublished, and `draft-ietf-tls-mlkem` is still absent from the
-RFC index, though its queue entry could not be re-read this time, so the
-September queue date is reported as it was. `radar.cloudflare.com` answers 403
-to automated clients and is not linked. NSA's 2 October announcement is
-described from reports, not from `nsa.gov`, for the reason given under Limits.
-
-**Currency.** All but one GitHub entry had commits within the last five months, most within days. The exception is `ietf-wg-pquip/state-of-protocols-and-pqc`, last updated June 2025, which is flagged inline above rather than quietly listed alongside actively maintained projects.
+**Last checked: 2026-10-06.** Every GitHub entry resolved and none was archived; all had been pushed within the last five months, most within days, except `ietf-wg-pquip/state-of-protocols-and-pqc` (June 2025), which is flagged inline above rather than quietly listed alongside actively maintained projects. Of the non-GitHub links, all returned HTTP 200 except those on the two hosts named under Limits. Earlier checks and what each one changed are in the pull requests, not here.
 
 **What that caught.** Two entries were dropped for not existing at all. Two candidate lists turned out to be the same repository under a former name, and another had been transferred to a different owner. Most importantly, a widely repeated summary had RFC 9881 and RFC 9935 assigned to the wrong algorithms; reading the RFCs shows 9881 is ML-DSA and 9935 is ML-KEM.
 
-**Limits.** `nsa.gov`, `cisa.gov` and `nccoe.nist.gov` return HTTP 403 to automated clients, so their guidance is described but not linked as verified. HTTP 200 proves a URL resolves, not that its content is still accurate. Star counts and commit dates are deliberately not recorded per entry, because they are stale the day after they are written.
+**Limits.** `nsa.gov`, `cisa.gov`, `nccoe.nist.gov` and `radar.cloudflare.com` return HTTP 403 to automated clients, so their content is described but not linked as verified; `datatracker.ietf.org` (403) and `pq-crystals.org` (429) do too, but are kept because they are the authoritative sources for what they link, confirmed through RFC Editor records where possible. HTTP 200 proves a URL resolves, not that its content is still accurate. Star counts and commit dates are deliberately not recorded per entry, because they are stale the day after they are written.
 
 The larger limit is coverage, not liveness. The first edition of this list was
 searched along five axes — existing lists, standards bodies, implementations,
