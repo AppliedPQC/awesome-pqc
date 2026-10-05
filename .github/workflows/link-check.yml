@@ -28,7 +28,9 @@ jobs:
           # datatracker.ietf.org (403) and pq-crystals.org (429) do the same but
           # are kept in the README as the authoritative sources for what they
           # link, confirmed through RFC Editor records; see its Limits.
-          skip='nsa\.gov|cisa\.gov|nccoe\.nist\.gov|datatracker\.ietf\.org|pq-crystals\.org'
+          # x.com is the header badge's profile link, which refuses requests
+          # from GitHub's runners (403) while answering browsers.
+          skip='nsa\.gov|cisa\.gov|nccoe\.nist\.gov|datatracker\.ietf\.org|pq-crystals\.org|x\.com/'
           grep -oE 'https?://[^)" ]+' README.md | sed 's/[.,]$//' | sed 's/#.*//' \
             | sort -u | grep -vE "$skip" > urls.txt
           echo "checking $(wc -l < urls.txt) distinct URLs"
