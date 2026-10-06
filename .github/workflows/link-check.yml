@@ -36,11 +36,18 @@ jobs:
           echo "checking $(wc -l < urls.txt) distinct URLs"
           fail=0
           while read -r u; do
-            # A transport failure must name the URL, not abort the job: the
-            # runner's shell is `bash -e`, so a failing curl would otherwise
-            # end the script with curl's own exit code and no report.
-            code=$(curl -sL -o /dev/null -w '%{http_code}' --max-time 30 --retry 2 \
-                        --max-redirs 5 -A 'Mozilla/5.0 (link-check)' "$u") || code="curl-$?"
+            # The runner's shell is `bash -e`, so curl's own failures are caught
+            # here rather than ending the script. Transport errors are retried,
+            # and a status the server did send counts even if the body transfer
+            # then failed (curl exit 23 on a write error after the response
+            # began, which some hosts produce intermittently for runner IPs).
+            code=$(curl -sL -o /dev/null -w '%{http_code}' --max-time 30 \
+                        --retry 3 --retry-all-errors --retry-delay 2 \
+                        --max-redirs 5 -A 'Mozilla/5.0 (link-check)' "$u") && rc=0 || rc=$?
+            case "$rc:$code" in
+              0:*|*:200|*:206) ;;
+              *) code="curl-$rc" ;;
+            esac
             case "$code" in
               200|206) ;;
               *) echo "::error::$code $u"; fail=$((fail+1)) ;;
