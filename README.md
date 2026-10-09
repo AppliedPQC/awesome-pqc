@@ -176,6 +176,7 @@ Its scheme is Falcon, which NIST selected but has not yet standardized: with
 FIPS 206 unpublished, this is Falcon rather than FN-DSA.
 
 - [`algorand/go-algorand` v5.0.0](https://github.com/algorand/go-algorand/releases/tag/v5.0.0-stable) — the consensus upgrade (August 2026) adding native Falcon-1024 account signatures, post-quantum delegated LogicSigs, and `algokey pq` key management.
+- [FractalAI](https://github.com/johnInarti/pqc-receipt-anchor) — a small Rust L1 that signs block consensus with ML-DSA-65 outright, where Cosmos registers it as an opt-in key type. Its interest is operational rather than architectural: a public key directory at [`/.well-known/x402-receipt-keys`](https://fractalai.net.co/.well-known/x402-receipt-keys) has been rotated through three epochs with each root committing to its predecessor, and still publishes the superseded key ids so older receipts keep verifying; the companion repository is a write-once Solidity anchor plus an offline verifier that checks the ML-DSA-65 signature locally and its on-chain timestamp against any RPC, so a receipt can be shown to predate a block without trusting the issuer. Read it as a worked example, not a security claim: one validator, no external audit, and no FIPS 140-3 validation of the module.
 
 
 ## Learning
