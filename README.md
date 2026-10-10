@@ -20,6 +20,7 @@ hardware), and **migration** (inventory, hybrid rollout, and timelines).
 - [Libraries](#libraries)
 - [Protocol integration and deployment](#protocol-integration-and-deployment)
 - [Blockchain and consensus](#blockchain-and-consensus)
+- [Discovery and inventory](#discovery-and-inventory)
 - [Learning](#learning)
 - [Other curated lists](#other-curated-lists)
 - [Verification](#verification)
@@ -177,6 +178,16 @@ FIPS 206 unpublished, this is Falcon rather than FN-DSA.
 
 - [`algorand/go-algorand` v5.0.0](https://github.com/algorand/go-algorand/releases/tag/v5.0.0-stable) — the consensus upgrade (August 2026) adding native Falcon-1024 account signatures, post-quantum delegated LogicSigs, and `algokey pq` key management.
 
+
+## Discovery and inventory
+
+Migration begins before any algorithm is chosen: the EU roadmap wants national
+inventories started by end-2026 and NCSC wants discovery done by 2028, and both
+assume an organisation can say where RSA and the elliptic curves actually are.
+That is a different activity from the sections above, and in practice the hard
+part is not the scan but trusting its gaps.
+
+- [`johnInarti/pqc-readiness-action`](https://github.com/johnInarti/pqc-readiness-action) — a GitHub Action that statically scans a repository for RSA, ECDSA, ECDH/X25519, Ed25519/Ed448, finite-field Diffie-Hellman and DSA, including committed SSH and X.509 key material and manifest dependencies that implement them, and writes a CycloneDX 1.6 CBOM (ECMA-424). It earns a place here for being honest about the limit that makes inventories dangerous: a static scan cannot see dynamic loading, vendored binaries or hardware modules, so zero findings means nothing matched rather than nothing is there, and the tool prints a warning and a run annotation whenever its own coverage was truncated. Not a compliance certification. Runs in the caller's runner with no network egress under default settings, and has no third-party dependencies. Apache-2.0.
 
 ## Learning
 
