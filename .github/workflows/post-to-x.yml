@@ -1,0 +1,44 @@
+name: Post to X
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  post:
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'x-post')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - run: pip install tweepy==4.14.0
+
+      - name: Post, then report to Telegram
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          set -euo pipefail
+          export POST=$(python3 .github/scripts/x_post_text.py)
+          id=$(python3 -c '
+          import os, tweepy
+          r = tweepy.Client(
+              consumer_key=os.environ["X_API_KEY"], consumer_secret=os.environ["X_API_SECRET"],
+              access_token=os.environ["X_ACCESS_TOKEN"], access_token_secret=os.environ["X_ACCESS_SECRET"],
+          ).create_tweet(text=os.environ["POST"])
+          print(r.data["id"])
+          ')
+          curl -sf -o /dev/null "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=Posted: https://x.com/AppliedPQC/status/${id}"

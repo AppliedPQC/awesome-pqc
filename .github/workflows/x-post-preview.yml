@@ -1,0 +1,36 @@
+name: X post preview
+
+on:
+  pull_request:
+    types: [labeled, edited]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  telegram:
+    if: >-
+      contains(github.event.pull_request.labels.*.name, 'x-post') &&
+      (github.event.action == 'labeled' && github.event.label.name == 'x-post' ||
+       github.event.action == 'edited' && github.event.changes.body != null)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Send the draft to Telegram
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          set -euo pipefail
+          post=$(python3 .github/scripts/x_post_text.py)
+          message=$(printf 'Draft X post. Merge the PR to publish it; edit its "## X post" section to change it.\n\n%s\n\n%s' "$post" "$PR_URL")
+          curl -sf -o /dev/null "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${message}" \
+            --data-urlencode "link_preview_options={\"is_disabled\":true}"
