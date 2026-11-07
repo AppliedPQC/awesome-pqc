@@ -58,6 +58,7 @@ hardware), and **migration** (inventory, hybrid rollout, and timelines).
 - [RFC 10024](https://www.rfc-editor.org/rfc/rfc10024.html) — the hybrid TLS 1.3 groups actually deployed today: X25519MLKEM768, SecP256r1MLKEM768 and SecP384r1MLKEM1024 (August 2026, formerly draft-ietf-tls-ecdhe-mlkem).
 - [draft-ietf-tls-mlkem](https://datatracker.ietf.org/doc/draft-ietf-tls-mlkem/) — standalone ML-KEM in the TLS 1.3 key schedule. Approved and in the RFC Editor queue since 2026-09-08; as of 2026-10-06 the RFC index still has no such RFC.
 - [RFC 10042](https://www.rfc-editor.org/rfc/rfc10042.html) — hybrid ML-KEM key exchange for SSH, including the `mlkem768x25519-sha256` method OpenSSH uses by default (August 2026).
+- [RFC 10073](https://www.rfc-editor.org/rfc/rfc10073.html) — composite ML-DSA for X.509 PKI (November 2026, Standards Track): ML-DSA-44, -65 or -87 paired with RSASSA-PSS, RSASSA-PKCS1-v1_5, ECDSA, Ed25519 or Ed448 under 18 registered identifiers, so hybrid certificates no longer need vendor-specific OIDs.
 
 ### National and regional guidance
 
