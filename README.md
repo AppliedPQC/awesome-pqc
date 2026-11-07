@@ -108,6 +108,7 @@ The part most implementers underestimate. An implementation is not correct becau
 - [`aws/aws-lc-rs`](https://github.com/aws/aws-lc-rs) — Rust over AWS-LC with a `ring`-compatible API, including ML-KEM and ML-DSA. It is also what rustls uses by default.
 - [`RustCrypto/KEMs`](https://github.com/RustCrypto/KEMs) — pure-Rust ML-KEM.
 - [`RustCrypto/signatures`](https://github.com/RustCrypto/signatures) — pure-Rust ML-DSA and SLH-DSA.
+- [`rustls/rustls`](https://github.com/rustls/rustls) — the Rust TLS library, post-quantum by default on its aws-lc-rs provider. X25519MLKEM768 has been supported since 0.23.22 (January 2025) and preferred since 0.23.27 (May 2025); 0.23.37 (February 2026) adds ML-KEM-1024 key exchange; and [0.23.44](https://github.com/rustls/rustls/releases/tag/v%2F0.23.44) (September 2026) enables ML-DSA certificates by default. Those certificates work only with private certificate hierarchies, because the public web PKI does not issue them.
 - [`cloudflare/circl`](https://github.com/cloudflare/circl) — Go PQC and hybrid primitives, used in production at Cloudflare.
 - [Go standard library](https://go.dev/doc/go1.27) — `crypto/mlkem` since Go 1.24; Go 1.27 (August 2026) adds `crypto/mldsa`, ML-DSA in `crypto/x509` and TLS 1.3, and the MLKEM1024 key exchange. Post-quantum Go without a third-party dependency.
 
