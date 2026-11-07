@@ -1,0 +1,75 @@
+name: Weekly research
+
+on:
+  schedule:
+    - cron: '23 7 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: weekly-research
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Skip while an x-post PR is still open
+        id: open
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          n=$(gh pr list --repo "$GITHUB_REPOSITORY" --label x-post --state open --json number --jq length)
+          echo "count=$n" >> "$GITHUB_OUTPUT"
+
+      - name: Load the prompt
+        if: steps.open.outputs.count == '0'
+        id: prompt
+        run: |
+          {
+            echo 'text<<PROMPT_EOF'
+            sed "s/{{TODAY}}/$(date -u +%F)/" .github/weekly-research.md
+            echo 'PROMPT_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Research and edit README.md
+        if: steps.open.outputs.count == '0'
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ github.token }}
+          prompt: ${{ steps.prompt.outputs.text }}
+          claude_args: --max-turns 80 --allowedTools "Read,Edit,Write,Glob,Grep,WebSearch,WebFetch,Bash(curl:*)"
+
+      - name: Open the PR
+        if: steps.open.outputs.count == '0'
+        env:
+          GH_TOKEN: ${{ secrets.AUTOMATION_PAT }}
+        run: |
+          set -euo pipefail
+          if [ ! -f .weekly/body.md ] || [ ! -f .weekly/title.txt ] || git diff --quiet -- README.md; then
+            echo "nothing new this week"
+            exit 0
+          fi
+          other=$(git diff --name-only | grep -vx 'README.md' || true)
+          if [ -n "$other" ]; then
+            echo "::error::changes outside README.md: $other"
+            exit 1
+          fi
+          title=$(head -n1 .weekly/title.txt)
+          mv .weekly "$RUNNER_TEMP/weekly"
+          branch="weekly-$(date -u +%F)"
+          git config user.name "Stephen Duan"
+          git config user.email "81497928+eigmax@users.noreply.github.com"
+          git switch -c "$branch"
+          git commit -q -m "$title" -- README.md
+          git push -q "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$branch"
+          gh pr create --repo "$GITHUB_REPOSITORY" --base main --head "$branch" \
+            --title "$title" --body-file "$RUNNER_TEMP/weekly/body.md" --label x-post
